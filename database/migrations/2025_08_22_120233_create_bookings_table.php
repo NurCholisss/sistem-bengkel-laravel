@@ -1,4 +1,5 @@
 <?php
+// database/migrations/xxxx_buat_tabel_bookings.php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -6,28 +7,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('vehicle_id')->constrained()->onDelete('cascade');
-            $table->foreignId('service_id')->nullable()->constrained()->onDelete('set null');
-            $table->date('schedule_date');
-            $table->time('schedule_time');
-            $table->text('customer_complaint');
-            $table->text('system_recommendation')->nullable();
-            $table->enum('status', ['pending', 'approved', 'done', 'cancelled'])->default('pending');
+            $table->foreignId('pengguna_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('kendaraan_id')->constrained('vehicles')->onDelete('cascade');
+            $table->foreignId('layanan_id')->nullable()->constrained('services')->onDelete('set null');
+            $table->date('tanggal_jadwal');
+            $table->time('waktu_jadwal');
+            $table->text('keluhan_pelanggan');
+            $table->text('rekomendasi_sistem')->nullable();
+            $table->enum('status', ['menunggu', 'disetujui', 'selesai', 'dibatalkan'])->default('menunggu');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('bookings');
