@@ -1,19 +1,24 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Dasbor Admin</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Dasbor Admin</h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item active">Dasbor</li>
+        </ol>
+    </nav>
 </div>
 
-<div class="row">
-    <!-- Statistik Cards -->
-    <div class="col-md-3 mb-4">
+<!-- Statistik -->
+<div class="row mb-4">
+    <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1">
-                        <h5 class="card-title">Pelanggan</h5>
-                        <h2 class="card-text">{{ $totalPelanggan }}</h2>
+                        <h5 class="card-title">{{ $totalPelanggan }}</h5>
+                        <p class="card-text mb-0">Total Pelanggan</p>
                     </div>
                     <div class="flex-shrink-0">
                         <i class="bi bi-people fs-1"></i>
@@ -22,14 +27,13 @@
             </div>
         </div>
     </div>
-    
-    <div class="col-md-3 mb-4">
+    <div class="col-md-3">
         <div class="card bg-success text-white">
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1">
-                        <h5 class="card-title">Kendaraan</h5>
-                        <h2 class="card-text">{{ $totalKendaraan }}</h2>
+                        <h5 class="card-title">{{ $totalKendaraan }}</h5>
+                        <p class="card-text mb-0">Total Kendaraan</p>
                     </div>
                     <div class="flex-shrink-0">
                         <i class="bi bi-car-front fs-1"></i>
@@ -38,14 +42,13 @@
             </div>
         </div>
     </div>
-    
-    <div class="col-md-3 mb-4">
+    <div class="col-md-3">
         <div class="card bg-info text-white">
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1">
-                        <h5 class="card-title">Layanan</h5>
-                        <h2 class="card-text">{{ $totalLayanan }}</h2>
+                        <h5 class="card-title">{{ $totalLayanan }}</h5>
+                        <p class="card-text mb-0">Total Layanan</p>
                     </div>
                     <div class="flex-shrink-0">
                         <i class="bi bi-tools fs-1"></i>
@@ -54,14 +57,13 @@
             </div>
         </div>
     </div>
-    
-    <div class="col-md-3 mb-4">
+    <div class="col-md-3">
         <div class="card bg-warning text-dark">
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1">
-                        <h5 class="card-title">Pemesanan</h5>
-                        <h2 class="card-text">{{ array_sum($statistikPemesanan) }}</h2>
+                        <h5 class="card-title">{{ array_sum($statistikPemesanan) }}</h5>
+                        <p class="card-text mb-0">Total Pemesanan</p>
                     </div>
                     <div class="flex-shrink-0">
                         <i class="bi bi-calendar-check fs-1"></i>
@@ -72,53 +74,43 @@
     </div>
 </div>
 
-<div class="row">
-    <!-- Statistik Pemesanan -->
-    <div class="col-md-6 mb-4">
+<!-- Statistik Pemesanan -->
+<div class="row mb-4">
+    <div class="col-md-6">
         <div class="card">
-            <div class="card-header">
-                <h5 class="card-title">Statistik Pemesanan</h5>
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">Statistik Pemesanan</h5>
             </div>
             <div class="card-body">
-                <canvas id="pemesananChart" height="250"></canvas>
+                <canvas id="statistikPemesananChart" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
-    
-    <!-- Pemesanan Terbaru -->
-    <div class="col-md-6 mb-4">
+    <div class="col-md-6">
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title">Pemesanan Terbaru</h5>
-                <a href="{{ route('admin.pemesanan.index') }}" class="btn btn-sm btn-primary">Lihat Semua</a>
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">Pemesanan Terbaru</h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Pelanggan</th>
-                                <th>Kendaraan</th>
-                                <th>Tanggal</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($pemesananTerbaru as $pemesanan)
-                            <tr>
-                                <td>{{ $pemesanan->pengguna->nama }}</td>
-                                <td>{{ $pemesanan->kendaraan->merk }} {{ $pemesanan->kendaraan->model }}</td>
-                                <td>{{ $pemesanan->tanggal_jadwal->format('d/m/Y') }}</td>
-                                <td>
-                                    <span class="badge bg-{{ $pemesanan->status == 'menunggu' ? 'warning' : ($pemesanan->status == 'disetujui' ? 'success' : ($pemesanan->status == 'selesai' ? 'info' : 'danger')) }}">
+                @if($pemesananTerbaru->count() > 0)
+                    <div class="list-group">
+                        @foreach($pemesananTerbaru as $pemesanan)
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ $pemesanan->pengguna->nama }}</h6>
+                                        <small class="text-muted">{{ $pemesanan->kendaraan->merk }} {{ $pemesanan->kendaraan->model }}</small>
+                                    </div>
+                                    <span class="badge bg-{{ $pemesanan->status == 'menunggu' ? 'warning' : ($pemesanan->status == 'disetujui' ? 'primary' : ($pemesanan->status == 'selesai' ? 'success' : 'danger')) }}">
                                         {{ ucfirst($pemesanan->status) }}
                                     </span>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-muted">Belum ada pemesanan</p>
+                @endif
             </div>
         </div>
     </div>
@@ -127,36 +119,35 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('pemesananChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Menunggu', 'Disetujui', 'Selesai', 'Dibatalkan'],
-                datasets: [{
-                    data: [
-                        {{ $statistikPemesanan['menunggu'] }},
-                        {{ $statistikPemesanan['disetujui'] }},
-                        {{ $statistikPemesanan['selesai'] }},
-                        {{ $statistikPemesanan['dibatalkan'] }}
-                    ],
-                    backgroundColor: [
-                        '#ffc107',
-                        '#198754',
-                        '#0dcaf0',
-                        '#dc3545'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
+    const ctx = document.getElementById('statistikPemesananChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Menunggu', 'Disetujui', 'Selesai', 'Dibatalkan'],
+            datasets: [{
+                label: 'Jumlah Pemesanan',
+                data: [
+                    {{ $statistikPemesanan['menunggu'] }},
+                    {{ $statistikPemesanan['disetujui'] }},
+                    {{ $statistikPemesanan['selesai'] }},
+                    {{ $statistikPemesanan['dibatalkan'] }}
+                ],
+                backgroundColor: [
+                    '#ffc107',
+                    '#0d6efd',
+                    '#198754',
+                    '#dc3545'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
-        });
+        }
     });
 </script>
 @endpush
